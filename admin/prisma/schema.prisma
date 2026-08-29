@@ -1,0 +1,294 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model blocks {
+  id                            String   @id
+  blockerId                     String
+  blockedId                     String
+  createdAt                     DateTime @default(now())
+  users_blocks_blockedIdTousers users    @relation("blocks_blockedIdTousers", fields: [blockedId], references: [id], onDelete: Cascade)
+  users_blocks_blockerIdTousers users    @relation("blocks_blockerIdTousers", fields: [blockerId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+}
+
+model devices {
+  id        String   @id
+  userId    String
+  pushToken String   @unique
+  platform  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model event_attendees {
+  id        String   @id
+  eventId   String
+  userId    String
+  status    String   @default("going")
+  createdAt DateTime @default(now())
+  events    events   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model events {
+  id              String            @id
+  creatorId       String
+  title           String
+  description     String?
+  coverImageUrl   String?
+  coverImageKey   String?
+  latitude        Float
+  longitude       Float
+  address         String
+  city            String?
+  startDate       DateTime
+  endDate         DateTime
+  maxAttendees    Int?
+  isPublic        Boolean           @default(true)
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  event_attendees event_attendees[]
+  users           users             @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model likes {
+  id                            String   @id
+  fromUserId                    String
+  toUserId                      String
+  isSuperLike                   Boolean  @default(false)
+  note                          String?
+  createdAt                     DateTime @default(now())
+  users_likes_fromUserIdTousers users    @relation("likes_fromUserIdTousers", fields: [fromUserId], references: [id], onDelete: Cascade)
+  users_likes_toUserIdTousers   users    @relation("likes_toUserIdTousers", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId])
+}
+
+model matches {
+  id                           String     @id
+  user1Id                      String
+  user2Id                      String
+  isActive                     Boolean    @default(true)
+  createdAt                    DateTime   @default(now())
+  updatedAt                    DateTime
+  users_matches_user1IdTousers users      @relation("matches_user1IdTousers", fields: [user1Id], references: [id], onDelete: Cascade)
+  users_matches_user2IdTousers users      @relation("matches_user2IdTousers", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages                     messages[]
+
+  @@unique([user1Id, user2Id])
+}
+
+model messages {
+  id        String      @id
+  matchId   String
+  senderId  String
+  type      MessageType @default(TEXT)
+  content   String?
+  mediaUrl  String?
+  mediaKey  String?
+  isRead    Boolean     @default(false)
+  readAt    DateTime?
+  isDeleted Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  matches   matches     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  users     users       @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([matchId, createdAt])
+}
+
+model notifications {
+  id        String           @id
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  data      Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  users     users            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model photos {
+  id               String   @id
+  userId           String
+  url              String
+  key              String
+  thumbnailUrl     String?
+  isMain           Boolean  @default(false)
+  order            Int      @default(0)
+  moderationStatus String   @default("pending")
+  createdAt        DateTime @default(now())
+  users            users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model profiles {
+  id              String       @id
+  userId          String       @unique
+  name            String
+  birthDate       DateTime
+  gender          Gender
+  lookingFor      LookingFor[]
+  bio             String?
+  occupation      String?
+  education       String?
+  height          Int?
+  interests       String[]
+  prompts         Json?
+  spotifyId       String?
+  spotifyToken    String?
+  topArtists      String[]
+  topTracks       String[]
+  instagramId     String?
+  instagramHandle String?
+  maxDistance     Int          @default(50)
+  ageMin          Int          @default(18)
+  ageMax          Int          @default(99)
+  showMe          Gender[]
+  showAge         Boolean      @default(true)
+  showDistance    Boolean      @default(true)
+  isVisible       Boolean      @default(true)
+  showLocation    Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime
+  city            String?
+  district        String?
+  users           users        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model refresh_tokens {
+  id        String   @id
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  isRevoked Boolean  @default(false)
+  createdAt DateTime @default(now())
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model reports {
+  id                                  String       @id
+  reporterId                          String
+  reportedUserId                      String
+  reason                              ReportReason
+  description                         String?
+  images                              String[]     @default([])
+  isResolved                          Boolean      @default(false)
+  resolvedAt                          DateTime?
+  createdAt                           DateTime     @default(now())
+  users_reports_reportedUserIdTousers users        @relation("reports_reportedUserIdTousers", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  users_reports_reporterIdTousers     users        @relation("reports_reporterIdTousers", fields: [reporterId], references: [id], onDelete: Cascade)
+}
+
+model user_locations {
+  id        String   @id
+  userId    String
+  latitude  Float
+  longitude Float
+  accuracy  Float?
+  createdAt DateTime @default(now())
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model users {
+  id                                    String            @id
+  email                                 String            @unique
+  phone                                 String?           @unique
+  passwordHash                          String
+  isEmailVerified                       Boolean           @default(false)
+  isPhoneVerified                       Boolean           @default(false)
+  isFaceVerified                        Boolean           @default(false)
+  faceDescriptor                        Json?
+  isPremium                             Boolean           @default(false)
+  premiumExpiresAt                      DateTime?
+  isActive                              Boolean           @default(true)
+  isBanned                              Boolean           @default(false)
+  banReason                             String?
+  lastActiveAt                          DateTime          @default(now())
+  createdAt                             DateTime          @default(now())
+  updatedAt                             DateTime
+  approvalStatus                        ApprovalStatus    @default(PENDING)
+  blocks_blocks_blockedIdTousers        blocks[]          @relation("blocks_blockedIdTousers")
+  blocks_blocks_blockerIdTousers        blocks[]          @relation("blocks_blockerIdTousers")
+  devices                               devices[]
+  event_attendees                       event_attendees[]
+  events                                events[]
+  likes_likes_fromUserIdTousers         likes[]           @relation("likes_fromUserIdTousers")
+  likes_likes_toUserIdTousers           likes[]           @relation("likes_toUserIdTousers")
+  matches_matches_user1IdTousers        matches[]         @relation("matches_user1IdTousers")
+  matches_matches_user2IdTousers        matches[]         @relation("matches_user2IdTousers")
+  messages                              messages[]
+  notifications                         notifications[]
+  photos                                photos[]
+  profiles                              profiles?
+  refresh_tokens                        refresh_tokens[]
+  reports_reports_reportedUserIdTousers reports[]         @relation("reports_reportedUserIdTousers")
+  reports_reports_reporterIdTousers     reports[]         @relation("reports_reporterIdTousers")
+  user_locations                        user_locations[]
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  OTHER
+}
+
+enum LookingFor {
+  FRIENDSHIP
+  DATING
+  LONG_TERM
+  CASUAL
+  NETWORKING
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  GIF
+}
+
+enum NotificationType {
+  MATCH
+  MESSAGE
+  LIKE
+  SUPER_LIKE
+  EVENT_INVITE
+  SYSTEM
+}
+
+enum ReportReason {
+  FAKE_PROFILE
+  INAPPROPRIATE_CONTENT
+  HARASSMENT
+  SPAM
+  UNDERAGE
+  OTHER
+}

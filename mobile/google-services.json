@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802333912724",
+    "project_id": "garcia-9d0ed",
+    "storage_bucket": "garcia-9d0ed.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802333912724:android:e08bd80e7ef6f3fc500e81",
+        "android_client_info": {
+          "package_name": "com.garcia.dating"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuUabBlztycpDpkwMNHFn9VJsHL5PDby0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

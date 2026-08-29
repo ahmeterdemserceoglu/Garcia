@@ -1,0 +1,95 @@
+{
+  "expo": {
+    "name": "Garcia",
+    "slug": "garcia-dating",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "spark",
+    "splash": {
+      "image": "./assets/transparent.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.garcia.dating",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Garcia uses your camera to verify your identity and take profile photos.",
+        "NSPhotoLibraryUsageDescription": "Garcia needs access to your photos to set your profile pictures.",
+        "NSLocationWhenInUseUsageDescription": "Garcia uses your location to find people near you.",
+        "NSLocationAlwaysUsageDescription": "Garcia uses your location to show you people nearby.",
+        "NSMicrophoneUsageDescription": "Garcia uses your microphone for voice messages."
+      },
+      "buildNumber": "8"
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.garcia.dating",
+      "versionCode": 8,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Garcia to access your camera."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Garcia to use your location."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Garcia to access your photos."
+        }
+      ],
+      "expo-notifications",
+      "@maplibre/maplibre-react-native"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "527a109a-ce82-460a-a3e5-f9022d24f7ec"
+      }
+    },
+    "owner": "ahmedigollik1",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/527a109a-ce82-460a-a3e5-f9022d24f7ec"
+    }
+  }
+}
